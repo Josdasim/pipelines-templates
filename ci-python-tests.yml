@@ -1,0 +1,96 @@
+name: "CI - Python Tests"
+
+on:
+  workflow_call:
+    inputs:
+      #----Configuracion General----
+      python-version:
+        description: "Version de Python"
+        required: false
+        type: string
+        default: "3.12"
+      
+      #----Control de Ejecucion----
+      stop-on-fail:
+        desription: "Si es true, el pipeline se detendra si algo falla"
+        required: false
+        default: true
+
+      #----Linter----
+      run-lint:
+        description: "Ejecutar analisis de codigo (flake8)"
+        required: false
+        default: true
+      lint-command:
+        description: "Comando de linter (opcional)"
+        required: false
+        default: ""
+
+      #----Tests----
+      run-tests:
+        description: "Ejecutar pruebas unitarias"
+        requered: false
+        default: true
+      test-command:
+        description: "Comando para ejecutar pruebas(opcional)"
+        requiered: false
+        type: string
+        default: ""
+
+jobs:
+  check-and-test:
+    runs-on: ubuntu-lasted
+    steps: 
+      #----Clonar repo----
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      #----Configuraciones de python----
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: #{{ inputs.python-version }}
+
+      - name: Instalar dependencias
+        run: |
+          pip install --upgrade pip
+          if [-f requiremnts.txt ]; then pip install -r requirements.txt; fi
+
+      #----Linter----
+      - name: Ejecutar Linter
+        if: ${{ inputs.run-lint == 'true' }}
+        continue-on-error: ${{ inputs.stop-on-fail != 'true' }}
+        run: |
+          echo "Ejecutando analisis de codigo..."
+          if [ -n "${{ inputs.lint-command }}"]; then
+            echo "Usando comando personalizado de lint..."
+            ${{ inputs.lint-command }}
+          else
+            echo "Usando flake8 por defecto..."
+            pip install flake8
+            flake8 .
+          fi
+
+      #----Tests----
+      - name: Ejecutar pruebas
+        if: ${{ inputs.run-tests == 'true' }}
+        continue-on-error: ${{ inputs.stop-on-fail != 'true' }}
+        run: |
+          if [ -n "${{inputs.test-command == true}}"]; then
+            echo "Ejecutando comando de prueba personalizado"
+            ${{ inputs.test-command }}
+          else
+            echo "Corriendo comando pytest por defecto"
+            pip install pytest pytest-cov
+            pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term-missing  -v
+          fi
+
+      #----Reporte de Pruebas----
+      - name: Generar Reporte de pruebas
+        if: always() && ${{ inputs.run-tests == 'true'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml htmlcov
+          if-no-files-found: ignore
+
