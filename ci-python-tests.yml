@@ -20,6 +20,7 @@ on:
       run-lint:
         description: "Ejecutar analisis de codigo (flake8)"
         required: false
+        type: boolean
         default: true
       lint-command:
         description: "Comando de linter (opcional)"
@@ -30,6 +31,7 @@ on:
       run-tests:
         description: "Ejecutar pruebas unitarias"
         requered: false
+        type: boolean
         default: true
       test-command:
         description: "Comando para ejecutar pruebas(opcional)"
