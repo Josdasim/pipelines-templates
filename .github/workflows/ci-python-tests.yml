@@ -43,7 +43,7 @@ on:
 
 jobs:
   check-and-test:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     steps: 
       #----Clonar repo----
       - name: Checkout del repositorio
