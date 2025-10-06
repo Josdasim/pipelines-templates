@@ -84,6 +84,7 @@ jobs:
         if: ${{ inputs.run-tests }}
         continue-on-error: ${{ !inputs.stop-on-fail }}
         run: |
+          echo "Ejecutando pruebas..."
           mkdir -p reports/tests
           if [ -n "${{ inputs.test-command }}" ]; then
             echo "Ejecutando comando de prueba personalizado"
@@ -93,10 +94,10 @@ jobs:
             pip install pytest pytest-cov
 
             #----Se ejecuta pytest y se guarda el resultado----
-            pytest --cov=. \ 
-             --cov-report=xml:reports/tests/coverage.xml \
-             --cov-report=html:reports/tests/htmlcov \
-             --cov-report=term-missing  -v
+            pytest --cov=. \
+                   --cov-report=xml:reports/tests/coverage.xml \
+                   --cov-report=html:reports/tests/htmlcov \
+                   --cov-report=term-missing  -v
             echo "Reporte generado"
           fi
 
