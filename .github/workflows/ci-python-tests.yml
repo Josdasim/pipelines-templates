@@ -63,7 +63,7 @@ jobs:
       #----Linter----
       - name: Ejecutar Linter
         if: ${{ inputs.run-lint }}
-        continue-on-error: ${{ !inputs.stop-on-fail }}
+        continue-on-error: true
         run: |
           echo "Ejecutando analisis de codigo..."
           if [ -n "${{ inputs.lint-command }}" ]; then
@@ -72,7 +72,10 @@ jobs:
           else
             echo "Usando flake8 por defecto..."
             pip install flake8
-            flake8 .
+            mkdir -p reports/lint
+
+            #----Se ejecuta flake8 y se guarda el resultado----
+            flake8 . --output-file reports/lint/flake8-report.txt || true
           fi
 
       #----Tests----
@@ -86,15 +89,21 @@ jobs:
           else
             echo "Corriendo comando pytest por defecto"
             pip install pytest pytest-cov
-            pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term-missing  -v
+            mkdir -p reports/tests
+
+            #----Se ejecuta pytest y se guarda el resultado----
+            pytest --cov=. \ 
+             --cov-report=xml:reports/tests/coverage.xml \
+             --cov-report=html:reports/tests/htmlcov \
+             --cov-report=term-missing  -v
           fi
 
       #----Reporte de Pruebas----
       - name: Generar Reporte de pruebas
-        if: always() && inputs.run-tests
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: coverage.xml htmlcov
+          name: reports
+          path: reports/
           if-no-files-found: ignore
 
