@@ -12,8 +12,9 @@ on:
       
       #----Control de Ejecucion----
       stop-on-fail:
-        desription: "Si es true, el pipeline se detendra si algo falla"
+        description: "Si es true, el pipeline se detendra si algo falla"
         required: false
+        type: boolean
         default: true
 
       #----Linter----
@@ -25,17 +26,18 @@ on:
       lint-command:
         description: "Comando de linter (opcional)"
         required: false
+        type: string
         default: ""
 
       #----Tests----
       run-tests:
         description: "Ejecutar pruebas unitarias"
-        requered: false
+        required: false
         type: boolean
         default: true
       test-command:
         description: "Comando para ejecutar pruebas(opcional)"
-        requiered: false
+        required: false
         type: string
         default: ""
 
