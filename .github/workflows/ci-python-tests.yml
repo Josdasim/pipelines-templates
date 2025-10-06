@@ -66,16 +66,17 @@ jobs:
         continue-on-error: true
         run: |
           echo "Ejecutando analisis de codigo..."
+          mkdir -p reports/lint
           if [ -n "${{ inputs.lint-command }}" ]; then
             echo "Usando comando personalizado de lint..."
             ${{ inputs.lint-command }}
           else
             echo "Usando flake8 por defecto..."
             pip install flake8
-            mkdir -p reports/lint
 
             #----Se ejecuta flake8 y se guarda el resultado----
             flake8 . --output-file reports/lint/flake8-report.txt || true
+            echo "Reporte generado"
           fi
 
       #----Tests----
@@ -83,19 +84,20 @@ jobs:
         if: ${{ inputs.run-tests }}
         continue-on-error: ${{ !inputs.stop-on-fail }}
         run: |
-          if [ -n "${{ inputs.test-command }}"]; then
+          mkdir -p reports/tests
+          if [ -n "${{ inputs.test-command }}" ]; then
             echo "Ejecutando comando de prueba personalizado"
             ${{ inputs.test-command }}
           else
             echo "Corriendo comando pytest por defecto"
             pip install pytest pytest-cov
-            mkdir -p reports/tests
 
             #----Se ejecuta pytest y se guarda el resultado----
             pytest --cov=. \ 
              --cov-report=xml:reports/tests/coverage.xml \
              --cov-report=html:reports/tests/htmlcov \
              --cov-report=term-missing  -v
+            echo "Reporte generado"
           fi
 
       #----Reporte de Pruebas----
