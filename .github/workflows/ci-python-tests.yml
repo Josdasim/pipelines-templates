@@ -43,7 +43,7 @@ on:
     secrets:
       JWT_SECRET_KEY:
         required: false
-      JWT_SECRET_ALGORITHM:
+      JWT_ALGORITHM:
         required: false
       JWT_EXPIRE_MINUTES:
         required: false
