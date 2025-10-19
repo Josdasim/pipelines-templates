@@ -51,6 +51,12 @@ on:
 jobs:
   check-and-test:
     runs-on: ubuntu-latest
+
+    env:
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+      JWT_EXPIRE_MINUTES: ${{ secrets.JWT_EXPIRE_MINUTES }}
+
     steps: 
       #----Clonar repo----
       - name: Checkout del repositorio
