@@ -40,6 +40,13 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      JWT_SECRET_KEY:
+        required: false
+      JWT_SECRET_ALGORITHM:
+        required: false
+      JWT_EXPIRE_MINUTES:
+        required: false
 
 jobs:
   check-and-test:
