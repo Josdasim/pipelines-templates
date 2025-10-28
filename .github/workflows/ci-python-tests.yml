@@ -43,10 +43,6 @@ on:
     secrets:
       JWT_SECRET_KEY:
         required: false
-      JWT_ALGORITHM:
-        required: false
-      JWT_EXPIRE_MINUTES:
-        required: false
 
 jobs:
   check-and-test:
@@ -54,8 +50,6 @@ jobs:
 
     env:
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
-      JWT_EXPIRE_MINUTES: ${{ secrets.JWT_EXPIRE_MINUTES }}
 
     steps: 
       #----Clonar repo----
